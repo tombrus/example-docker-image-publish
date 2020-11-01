@@ -40,3 +40,7 @@ jobs:
           docker login  "ghcr.io" -u ${{github.repository_owner}} --password-stdin <<<"${{secrets.GHCR_TOKEN}}"
           docker push   "ghcr.io/${{github.repository}}:latest"
           docker logout "ghcr.io"
+  consume:
+    runs-on: ghcr.io/${{github.repository}}:latest
+    steps:
+      - run: ./hello_world.sh
