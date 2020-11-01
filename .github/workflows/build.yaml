@@ -17,6 +17,8 @@ jobs:
           cat <<EOF >hello_world.sh
           #!/bin/bash
           echo "Hello World!"
+          echo "Hello \${name:-unknown}"
+          echo "...from image created at $(date)"
           EOF
           chmod +x hello_world.sh
           cat <<EOF >Dockerfile
@@ -45,5 +47,5 @@ jobs:
     steps:
       - ########################################################################################################
         uses: docker://ghcr.io/tombrus/example-docker-image-publish:latest
-      - ########################################################################################################
-        run: ./hello_world.sh
+        env:
+          name: xyzzy
