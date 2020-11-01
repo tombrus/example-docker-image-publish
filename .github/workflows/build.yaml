@@ -19,6 +19,8 @@ jobs:
           echo "Hello World!"
           echo "Hello \${name:-unknown}"
           echo "...from image created at $(date)"
+          ls -la
+          pwd
           EOF
           chmod +x hello_world.sh
           cat <<EOF >Dockerfile
@@ -53,4 +55,6 @@ jobs:
     container:
       image: ghcr.io/tombrus/example-docker-image-publish:latest
     steps:
-      - run: ls -l
+      - run: |
+          ls -la
+          pwd
