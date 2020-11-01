@@ -44,6 +44,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - ########################################################################################################
-        uses: docker://ghcr.io/${{github.repository}}:latest
+        uses: docker://ghcr.io/tombrus/example-docker-image-publish:latest
       - ########################################################################################################
         run: ./hello_world.sh
