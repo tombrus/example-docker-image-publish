@@ -1,0 +1,42 @@
+name: publish
+on:
+  push
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - ########################################################################################################
+        uses: actions/checkout@v2
+      - ########################################################################################################
+        name: prepare
+        run: |
+          if [[ "${{secrets.GHCR_TOKEN}}" == "" ]]; then
+              echo "::error::you did not set a login token for GitHub Container Registry: secrets.GHCR_TOKEN"
+              exit 1
+          fi
+          cat <<EOF >hello_world.sh
+          #!/bin/bash
+          echo "Hello World!"
+          EOF
+          chmod +x hello_world.sh
+          cat <<EOF >Dockerfile
+          FROM ubuntu:latest
+          LABEL org.opencontainers.image.source="https://github.com/${{github.repository}}" \
+                org.opencontainers.image.title="example image" \
+                org.opencontainers.image.description="example image"
+          COPY hello_world.sh /
+          ENTRYPOINT ["/hello_world.sh"]
+          EOF
+      - ########################################################################################################
+        name: build and publish image
+        run: |
+          docker build --label org.opencontainers.image.revision=${{github.sha}} --iidfile example.id .
+          docker run --rm $(cat example.id) > test.log
+          if [[ "$(cat test.log)" != "Hello World!" ]]; then
+              echo "::error::the produced image returned '$(cat test.log)' instead of 'Hello World!'"
+              exit 1
+          fi
+          docker tag    "$(cat example.id)" "ghcr.io/${{github.repository}}:latest"
+          docker login  "ghcr.io" -u ${{github.repository_owner}} --password-stdin <<<"${{secrets.GHCR_TOKEN}}"
+          docker push   "ghcr.io/${{github.repository}}:latest"
+          docker logout "ghcr.io"
