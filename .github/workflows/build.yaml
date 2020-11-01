@@ -55,6 +55,4 @@ jobs:
     container:
       image: ghcr.io/tombrus/example-docker-image-publish:latest
     steps:
-      - run: |
-          ls -la /
-          pwd
+      - run: /hello_world.sh
