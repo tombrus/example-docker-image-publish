@@ -41,6 +41,9 @@ jobs:
           docker push   "ghcr.io/${{github.repository}}:latest"
           docker logout "ghcr.io"
   consume:
-    runs-on: ghcr.io/${{github.repository}}:latest
+    runs-on: ubuntu-20.04
     steps:
-      - run: ./hello_world.sh
+      - ########################################################################################################
+        uses: docker://ghcr.io/${{github.repository}}:latest
+      - ########################################################################################################
+        run: ./hello_world.sh
