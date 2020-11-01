@@ -45,3 +45,12 @@ jobs:
         uses: docker://ghcr.io/tombrus/example-docker-image-publish:latest
         env:
           name: xyzzy
+          
+          
+  consume2:
+    runs-on: ubuntu-latest
+    needs: [build]
+    container:
+      image: ghcr.io/tombrus/example-docker-image-publish:latest
+    steps:
+      - run: ./hello_world.sh
