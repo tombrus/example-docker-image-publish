@@ -11,16 +11,12 @@ jobs:
         name: prepare
         run: |
           if [[ "${{secrets.GHCR_TOKEN}}" == "" ]]; then
-              echo "::error::you did not set a login token for GitHub Container Registry: secrets.GHCR_TOKEN"
+              echo "::error::you did not set a login token for the GitHub Container Registry: secrets.GHCR_TOKEN"
               exit 1
           fi
           cat <<EOF >hello_world.sh
           #!/bin/bash
           echo "Hello World!"
-          echo "Hello \${name:-unknown}"
-          echo "...from image created at $(date)"
-          ls -la /
-          pwd
           EOF
           chmod +x hello_world.sh
           cat <<EOF >Dockerfile
@@ -39,20 +35,14 @@ jobs:
           docker login  "ghcr.io" -u ${{github.repository_owner}} --password-stdin <<<"${{secrets.GHCR_TOKEN}}"
           docker push   "ghcr.io/${{github.repository}}:latest"
           docker logout "ghcr.io"
+          
   consume:
-    runs-on: ubuntu-20.04
-    needs: [build]
-    steps:
-      - ########################################################################################################
-        uses: docker://ghcr.io/tombrus/example-docker-image-publish:latest
-        env:
-          name: xyzzy
-          
-          
-  consume2:
     runs-on: ubuntu-latest
     needs: [build]
     container:
       image: ghcr.io/tombrus/example-docker-image-publish:latest
     steps:
-      - run: /hello_world.sh
+      - ########################################################################################################
+        run: |
+          /hello_world.sh
+          which jq
