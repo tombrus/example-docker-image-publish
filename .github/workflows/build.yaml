@@ -19,7 +19,7 @@ jobs:
           echo "Hello World!"
           echo "Hello \${name:-unknown}"
           echo "...from image created at $(date)"
-          ls -la
+          ls -la /
           pwd
           EOF
           chmod +x hello_world.sh
@@ -56,5 +56,5 @@ jobs:
       image: ghcr.io/tombrus/example-docker-image-publish:latest
     steps:
       - run: |
-          ls -la
+          ls -la /
           pwd
