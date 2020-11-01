@@ -33,17 +33,13 @@ jobs:
         name: build and publish image
         run: |
           docker build --label org.opencontainers.image.revision=${{github.sha}} --iidfile example.id .
-          docker run --rm $(cat example.id) > test.log
-          if [[ "$(cat test.log)" != "Hello World!" ]]; then
-              echo "::error::the produced image returned '$(cat test.log)' instead of 'Hello World!'"
-              exit 1
-          fi
           docker tag    "$(cat example.id)" "ghcr.io/${{github.repository}}:latest"
           docker login  "ghcr.io" -u ${{github.repository_owner}} --password-stdin <<<"${{secrets.GHCR_TOKEN}}"
           docker push   "ghcr.io/${{github.repository}}:latest"
           docker logout "ghcr.io"
   consume:
     runs-on: ubuntu-20.04
+    needs: [build]
     steps:
       - ########################################################################################################
         uses: docker://ghcr.io/tombrus/example-docker-image-publish:latest
