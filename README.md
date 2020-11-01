@@ -2,7 +2,7 @@
 
 Everything is in the [action script](https://github.com/tombrus/example-docker-image-publish/blob/main/.github/workflows/build.yaml), even the `Dockerfile`:-)
 
-N.B. the action script needs a secret called `GHCR_TOKEN` with package read/write authorisation.
+N.B. the action script needs a secret called `GHCR_TOKEN` with package read/write authorized token.
 
 The first job:
 - makes a docker image with
