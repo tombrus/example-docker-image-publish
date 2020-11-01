@@ -14,17 +14,20 @@ jobs:
               echo "::error::you did not set a login token for the GitHub Container Registry: secrets.GHCR_TOKEN"
               exit 1
           fi
+          
           cat <<EOF >hello_world.sh
           #!/bin/bash
           echo "Hello World!"
           EOF
           chmod +x hello_world.sh
+          
           cat <<EOF >Dockerfile
           FROM ubuntu:latest
           LABEL org.opencontainers.image.source="https://github.com/${{github.repository}}" \
                 org.opencontainers.image.title="example image" \
                 org.opencontainers.image.description="example image"
           COPY hello_world.sh /
+          RUN apt-get update && apt-get install -y jq && rm -rf /var/lib/apt/lists/*
           ENTRYPOINT ["/hello_world.sh"]
           EOF
       - ########################################################################################################
