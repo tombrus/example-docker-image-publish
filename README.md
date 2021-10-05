@@ -15,3 +15,4 @@ The **second** job will use this image to:
 - verify that `jq` is properly installed
 
 I tried to keep the example as light as possible, just to show what you need to do to get this working.
+
